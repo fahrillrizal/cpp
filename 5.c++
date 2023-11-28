@@ -17,7 +17,13 @@ private:
     double saldo;
 
 public:
-    Keuangan() : saldo(0.0) {}
+    Keuangan() : saldo(0.0) {
+        bacaSaldoDariFile();
+    }
+
+    ~Keuangan() {
+        simpanSaldoKeFile();
+    }
 
     void catatPendapatan(double jumlah) {
         saldo += jumlah;
@@ -89,6 +95,35 @@ public:
         time_t now = time(0);
         tm* ltm = localtime(&now);
         return to_string(ltm->tm_mday) + '/' + to_string(1 + ltm->tm_mon) + '/' + to_string(1900 + ltm->tm_year);
+    }
+
+    void bacaSaldoDariFile() {
+        ifstream file("transaksi.txt");
+        if (file.is_open()) {
+            Transaksi transaksi;
+            while (file >> transaksi.tanggal >> transaksi.jenis >> transaksi.keterangan >> transaksi.jumlah) {
+                // Menggunakan saldo terakhir dari file
+                if (transaksi.jenis == "Pendapatan" || transaksi.jenis == "p") {
+                    saldo += transaksi.jumlah;
+                } else if (transaksi.jenis == "Pengeluaran" || transaksi.jenis == "k") {
+                    saldo -= transaksi.jumlah;
+                }
+            }
+            file.close();
+        } else {
+            cerr << "Gagal membuka file transaksi.txt" << endl;
+        }
+    }
+
+    void simpanSaldoKeFile() {
+        ofstream file("transaksi.txt", ios::app);
+        if (file.is_open()) {
+            // Simpan saldo sebagai transaksi terakhir
+            file << getCurrentDate() << " Saldo " << fixed << setprecision(2) << saldo << endl;
+            file.close();
+        } else {
+            cerr << "Gagal membuka file transaksi.txt" << endl;
+        }
     }
 };
 
