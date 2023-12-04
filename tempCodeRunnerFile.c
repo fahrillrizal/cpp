@@ -1,0 +1,1 @@
+// Remove trailing newline character
