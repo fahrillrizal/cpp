@@ -118,7 +118,6 @@ public:
     void simpanSaldoKeFile() {
         ofstream file("transaksi.txt", ios::app);
         if (file.is_open()) {
-            // Simpan saldo sebagai transaksi terakhir
             file << getCurrentDate() << " Saldo " << fixed << setprecision(2) << saldo << endl;
             file.close();
         } else {
@@ -142,7 +141,7 @@ int main() {
             case 'p':
                 cout << "Masukkan jumlah pendapatan (dalam jutaan): ";
                 cin >> jumlah;
-                keuangan.catatPendapatan(jumlah * 1000000);
+                keuangan.catatPendapatan(jumlah);
                 break;
 
             case 'K':
